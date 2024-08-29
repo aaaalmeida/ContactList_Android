@@ -16,7 +16,7 @@ public class ContactDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         String querry = "CREATE TABLE contact (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "nome STRING," +
+                "name STRING," +
                 "birthday DATE," +
                 "email STRING" +
                 ");";

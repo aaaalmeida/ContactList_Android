@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.example.contactslist.adapter.ContactAdapter;
 import com.example.contactslist.controller.ContactController;
-import com.example.contactslist.dbHelper.ContactDbHelper;
 import com.example.contactslist.model.Contact;
 
 import java.util.List;
@@ -24,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ContactController contactController = new ContactController(getApplicationContext());
-        List<Contact> alunos = contactController.getAllAsList();
-        ContactAdapter adaptador = new ContactAdapter(alunos,getApplicationContext());
+        List<Contact> contacts = contactController.getAllAsList();
+        ContactAdapter adaptador = new ContactAdapter(contacts,getApplicationContext());
         ListView lv = (ListView) findViewById(R.id.listViewContact);
         lv.setAdapter(adaptador);
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 TextView txtNome = (TextView) view.findViewById(R.id.textViewNome);
                 int pId = Integer.parseInt(txtId.getText().toString());
                 String pNome = txtNome.getText().toString();
-                Toast.makeText(getApplicationContext(), pNome,Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), pId + pNome,Toast.LENGTH_LONG).show();
                 return true;
             }
         });

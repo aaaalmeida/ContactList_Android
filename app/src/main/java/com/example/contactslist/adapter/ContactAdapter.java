@@ -12,8 +12,8 @@ import com.example.contactslist.model.Contact;
 import java.util.List;
 
 public class ContactAdapter extends BaseAdapter {
-    private List<Contact> contactList;
-    private LayoutInflater layoutInflater;
+    private final List<Contact> contactList;
+    private final LayoutInflater layoutInflater;
 
     public ContactAdapter(List<Contact> contactList, Context context) {
         this.contactList = contactList;

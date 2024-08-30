@@ -1,5 +1,6 @@
 package com.example.contactslist.controller;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,7 +17,7 @@ import java.util.List;
 
 public class ContactController implements  IController<Contact> {
     private SQLiteDatabase db;
-    private ContactDbHelper dbHelper;
+    private final ContactDbHelper dbHelper;
 
     public ContactController(@Nullable Context context) {
         dbHelper = new ContactDbHelper(context);
@@ -24,7 +25,7 @@ public class ContactController implements  IController<Contact> {
 
     @Override
     public Cursor find(Integer id) {
-        return db.rawQuery("SELECT * FROM contact WHERE id = " + id, null, null);
+        return db.rawQuery("SELECT * FROM " + dbHelper.DB_TABLE + " WHERE id = " + id, null, null);
     }
 
     @Override
@@ -37,12 +38,13 @@ public class ContactController implements  IController<Contact> {
         List<Contact> contacts = new ArrayList<>();
         Cursor cursor = getAll();
         cursor.moveToFirst();
+
         while (!cursor.isAfterLast()) {
-            Contact contact = new Contact(
-                    cursor.getLong(cursor.getColumnIndex("id")),
-                    cursor.getString(cursor.getColumnIndex("name")),
-                    new Date(cursor.getString(cursor.getColumnIndex("birthday"))),
-                    cursor.getString(cursor.getColumnIndex("email"))
+            @SuppressLint("Range") Contact contact = new Contact(
+                    cursor.getLong(cursor.getColumnIndexOrThrow(dbHelper.DB_ID)),
+                    cursor.getString(cursor.getColumnIndexOrThrow(dbHelper.DB_NAME)),
+                    new Date(cursor.getString(cursor.getColumnIndexOrThrow(dbHelper.DB_BIRTHDAY))),
+                    cursor.getString(cursor.getColumnIndexOrThrow(dbHelper.DB_EMAIL))
             );
             cursor.moveToNext();
 
@@ -58,28 +60,28 @@ public class ContactController implements  IController<Contact> {
         ContentValues values = new ContentValues();
 
         db = dbHelper.getWritableDatabase();
-        values.put("name", contact.getName());
-        values.put("birthday", contact.getBirthday().toString());
-        values.put("email", contact.getEmail());
+        values.put(dbHelper.DB_NAME, contact.getName());
+        values.put(dbHelper.DB_BIRTHDAY, contact.getBirthday().toString());
+        values.put(dbHelper.DB_EMAIL, contact.getEmail());
 
-        long resp = db.insert("contact", null, values);
+        long resp = db.insert(dbHelper.DB_TABLE, null, values);
 
         return !(resp == -1);
     }
 
     @Override
     public Boolean remove(Integer id) {
-        int resp = db.delete("contact", "id = " + id, null);
+        int resp = db.delete(dbHelper.DB_TABLE, "id = " + id, null);
         return resp > 0;
     }
 
     @Override
     public Boolean update(Integer id, String newName, Date newBirthday, String newEmail) {
         ContentValues values = new ContentValues();
-        values.put("name", newName);
-        values.put("birthday", newBirthday.toString());
-        values.put("email", newEmail);
-        int resp = db.update("contact", values, "id = " + id, null);
+        values.put(dbHelper.DB_NAME, newName);
+        values.put(dbHelper.DB_BIRTHDAY, newBirthday.toString());
+        values.put(dbHelper.DB_EMAIL, newEmail);
+        int resp = db.update(dbHelper.DB_TABLE, values, "id = " + id, null);
         return resp>0;
     }
 }

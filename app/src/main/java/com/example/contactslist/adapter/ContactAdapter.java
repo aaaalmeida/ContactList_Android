@@ -7,17 +7,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.contactslist.R;
 import com.example.contactslist.model.Contact;
 
 import java.util.List;
 
 public class ContactAdapter extends BaseAdapter {
     private final List<Contact> contactList;
-    private final LayoutInflater layoutInflater;
+    private final Context context;
 
     public ContactAdapter(List<Contact> contactList, Context context) {
         this.contactList = contactList;
-        this.layoutInflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     @Override
@@ -32,19 +33,27 @@ public class ContactAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return i;
+        return contactList.get(i).getId();
     }
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.item_aluno, null);
+            view = LayoutInflater.from(context).inflate(R.layout.item_contact, viewGroup, false);
         }
-        Contact a = contactList.get(i);
-        final TextView txtId = (TextView) view.findViewById(R.id.textViewId);
-        final TextView txtNome = (TextView) view.findViewById(R.id.textViewNome);
-        txtId.setText(String.valueOf(a.getId()));
-        txtNome.setText(a.getName());
+        Contact c = (Contact) getItem(i);
+        final TextView idTV = (TextView) view.findViewById(R.id.textViewId);
+        idTV.setText(String.valueOf(c.getId()));
+
+        final TextView nomeTV = (TextView) view.findViewById(R.id.textViewNome);
+        nomeTV.setText(c.getName());
+
+        final TextView birthdayTV = (TextView) view.findViewById(R.id.textViewBirthday);
+        birthdayTV.setText(c.getBirthday().toString());
+
+        final TextView emailTV = (TextView) view.findViewById(R.id.textViewEmail);
+        emailTV.setText(c.getEmail());
+
         return view;
     }
 }
